@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  rust:
+    container_name: simple-db-rs
+    build: .
+    tty: true
+    volumes:
+      - .:/workspace

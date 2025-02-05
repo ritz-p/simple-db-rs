@@ -1,0 +1,36 @@
+name: Format and Merge
+
+on:
+  push:
+    branch: master
+    paths: ['**/*.rs','.github/workflows/rust-format.yml']
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+
+    - name: install rustfmt
+      run: rustup component add rustfmt
+
+    - name: run rustfmt
+      run: cargo fmt
+    - name: create pull request
+      id: pr
+      uses: peter-evans/create-pull-request@v5
+      with:
+        commit-message: 'fix: format rust file'
+        title: Auto format .rs files
+        branch: fmt/rust
+    - name: push output
+      run: |
+          echo "pr_number=${{ steps.pr.outputs.pull-request-number }}" >> $GITHUB_ENV
